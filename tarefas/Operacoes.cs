@@ -32,36 +32,38 @@ public class Operacoes
 
     public IList<Tarefa> Listar()
     {
-      var tarefas = new List<Tarefa>();
-      using(var conexao = new MySqlConnection(connectionString))
-      {
-        var sql = "SELECT id, nome, descricao, dataCriacao, dataExecucao, status FROM 'tarefa'";
-        conexao.Open();
+        var tarefas = new List<Tarefa>();
+        using(var conexao = new MySqlConnection(connectionString))
+        {            
+            var sql = "SELECT id, nome, descricao, dataCriacao, dataExecucao, status FROM `tarefa`";
+            conexao.Open();
 
-        using(var cmd = new MySqlCommand(sql, conexao))
-        using(var reader = cmd.ExecuteReader())
+            using (var cmd = new MySqlCommand(sql, conexao))
+            using (var reader = cmd.ExecuteReader())
             {
-            while(reader.Read())
-            {0
-                var tarefa = new Tarefa
+                while (reader.Read())
                 {
-                    Id = reader.GetInt32("id"),
-                    Nome = reader.GetString("nome"),
-                    Descricao = reader.GetString("descricao"),
-                    DataCriacao = reader.GetDateTime("dataCriacao"),
-                    DataExecucao = reader.IsDBNull(reader.GetOrdinal("dataExecucao"),
-                    ? (DateTime?)null
-                    : reader.
-                    Status = reader.GetInt32("status")
-                };
+                    var tarefa = new Tarefa
+                    {
+                        Id = reader.GetInt32("id"),
+                        Nome = reader.GetString("nome"),
+                        Descricao = reader.GetString("descricao"),
+                        DataCriacao = reader.GetDateTime("dataCriacao"),
+                        DataExecucao = reader.IsDBNull(reader.GetOrdinal("dataExecucao"))
+                                       ? (DateTime?)null
+                                       : reader.GetDateTime("dataExecucao"),
+                        Status = reader.GetInt32("status")
+                    };
 
-                tarefas.Add(tarefa);
+                    tarefas.Add(tarefa);
+                     
+                }               
             }
-            return tarefas;
+
         }
-      }
-        return Array.Empty<Tarefa>();
+        return tarefas;
     }
+
     public void Alterar(Tarefa tarefa)
     {
 
@@ -71,3 +73,4 @@ public class Operacoes
     {
 
     }
+}
